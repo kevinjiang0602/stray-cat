@@ -1,0 +1,2673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>如果我是一只流浪猫</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cold-dark: #1a1a2e;
+  --cold-mid: #2c3e50;
+  --cold-light: #7f8c8d;
+  --warm-orange: #e8a87c;
+  --warm-cream: #fdebd0;
+  --warm-gold: #f5b041;
+  --mint: #82e0aa;
+  --pink-soft: #fadbd8;
+  --danger-red: #922b21;
+  --text-dark: #2c2c2c;
+  --text-light: #f0e6d3;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', serif;
+  background: #0a0a0a;
+  color: var(--text-light);
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+}
+
+#app { width: 100%; height: 100%; position: relative; overflow: hidden; }
+
+#progress-bar {
+  position: fixed; top: 0; left: 0;
+  height: 4px; background: var(--warm-orange);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(232, 168, 124, 0.5);
+}
+
+.chapter {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+.chapter.active { opacity: 1; pointer-events: auto; }
+
+/* ===== 开始页 ===== */
+#start-page {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  text-align: center;
+}
+#start-page h1 {
+  font-family: 'ZCOOL KuaiLe', 'STKaiti', cursive;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  color: var(--warm-orange);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 30px rgba(232, 168, 124, 0.3);
+  animation: floatTitle 3s ease-in-out infinite;
+}
+@keyframes floatTitle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+#start-page .subtitle {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  color: #a0a0b0;
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+}
+.cat-emoji-large {
+  font-size: 5rem; display: block;
+  margin-bottom: 1.5rem;
+  animation: catBounce 2s ease-in-out infinite;
+}
+@keyframes catBounce {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.05) rotate(-3deg); }
+  75% { transform: scale(1.05) rotate(3deg); }
+}
+
+.btn-start {
+  background: linear-gradient(135deg, var(--warm-orange), #d4845a);
+  color: white; border: none; border-radius: 50px;
+  padding: 1rem 3rem; font-size: 1.2rem;
+  font-family: 'ZCOOL KuaiLe', 'STKaiti', cursive;
+  cursor: pointer; transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(232, 168, 124, 0.4);
+  -webkit-appearance: none;
+}
+.btn-start:hover, .btn-start:active {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(232, 168, 124, 0.6);
+}
+
+/* ===== 叙事文字 ===== */
+.narrative {
+  font-size: clamp(1rem, 2.8vw, 1.25rem);
+  line-height: 2; text-align: center;
+  max-width: 600px; margin-bottom: 2rem;
+  opacity: 0; animation: fadeInUp 1s ease forwards;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.chapter-title {
+  font-family: 'ZCOOL KuaiLe', 'STKaiti', cursive;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  margin-bottom: 1rem; opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* ===== 序章 ===== */
+#prologue {
+  background: linear-gradient(180deg, #1a1a2e 0%, #2c3e50 100%);
+  position: relative;
+}
+#prologue .blur-overlay {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  background: rgba(26, 26, 46, 0.6);
+  transition: opacity 0.3s ease;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab; touch-action: none;
+}
+#prologue .blur-overlay .hint {
+  font-size: 1rem; color: rgba(255,255,255,0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.rain-container {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: hidden; pointer-events: none;
+}
+.raindrop {
+  position: absolute; width: 2px;
+  background: linear-gradient(transparent, rgba(174, 194, 224, 0.5));
+  animation: rain linear infinite;
+}
+@keyframes rain {
+  from { transform: translateY(-100px); }
+  to { transform: translateY(100vh); }
+}
+
+/* ===== 选项 ===== */
+.choices {
+  display: flex; flex-direction: column; gap: 1rem;
+  width: 100%; max-width: 400px;
+}
+.choice-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px; padding: 1rem 1.5rem;
+  color: var(--text-light); font-size: 1rem;
+  font-family: 'Noto Serif SC', serif;
+  cursor: pointer; transition: all 0.3s ease;
+  text-align: left; -webkit-appearance: none;
+}
+.choice-btn:active {
+  background: rgba(232, 168, 124, 0.2);
+  border-color: var(--warm-orange);
+  transform: translateX(8px);
+}
+.choice-btn .emoji { font-size: 1.3rem; margin-right: 0.5rem; }
+
+.btn-continue {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50px; padding: 0.8rem 2.5rem;
+  color: var(--text-light); font-size: 1rem;
+  font-family: 'Noto Serif SC', serif;
+  cursor: pointer; transition: all 0.3s ease;
+  margin-top: 1.5rem; -webkit-appearance: none;
+}
+.btn-continue:active {
+  background: rgba(232, 168, 124, 0.2);
+  border-color: var(--warm-orange);
+}
+
+/* ===== 第一章 ===== */
+#chapter1 { background: linear-gradient(180deg, #1a1a2e 0%, #2c3e50 60%, #1a252f 100%); }
+.shelter-visual { width: 200px; height: 200px; position: relative; margin-bottom: 2rem; }
+.shelter-visual .cat-silhouette {
+  font-size: 6rem; display: block; text-align: center;
+  filter: drop-shadow(0 0 20px rgba(232, 168, 124, 0.3));
+}
+
+/* ===== 第二章 ===== */
+#chapter2 { background: linear-gradient(180deg, #2c3e50 0%, #34495e 50%, #5d6d7e 100%); }
+.food-area {
+  position: relative; width: 100%; max-width: 500px;
+  height: 300px; border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed rgba(255,255,255,0.15);
+  margin-bottom: 1rem; overflow: hidden;
+  touch-action: none;
+}
+.food-item {
+  position: absolute; font-size: 2.5rem;
+  cursor: grab; transition: transform 0.2s;
+  user-select: none; -webkit-user-select: none;
+  touch-action: none; z-index: 10;
+}
+.food-item:active { transform: scale(1.2); }
+.cat-target {
+  position: absolute; bottom: 10px; left: 50%;
+  transform: translateX(-50%); font-size: 4rem;
+}
+.food-info {
+  font-size: 0.9rem; color: rgba(255,255,255,0.6);
+  text-align: center; max-width: 400px; line-height: 1.6;
+}
+
+/* ===== 第三章 ===== */
+#chapter3 { background: linear-gradient(180deg, #1a1a2e 0%, #922b21 100%); }
+.road {
+  position: relative; width: 100%; max-width: 400px;
+  height: 350px; background: #2c2c2c;
+  border-radius: 12px; overflow: hidden;
+  border: 2px solid #444; touch-action: none;
+}
+.road-line {
+  position: absolute; left: 50%;
+  width: 4px; height: 30px;
+  background: #f1c40f;
+  transform: translateX(-50%);
+  animation: roadMove 0.8s linear infinite;
+}
+@keyframes roadMove {
+  from { transform: translateX(-50%) translateY(-60px); }
+  to { transform: translateX(-50%) translateY(350px); }
+}
+.cat-crossing {
+  position: absolute; bottom: 30px;
+  font-size: 2.5rem; transition: left 0.3s ease; z-index: 10;
+}
+.car { position: absolute; font-size: 2rem; z-index: 5; }
+.score-display {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.2rem; color: var(--warm-gold); margin-bottom: 1rem;
+}
+
+/* ===== 第四章 ===== */
+#chapter4 { background: linear-gradient(180deg, #2c3e50 0%, #e8a87c 100%); }
+.trust-scene {
+  position: relative; width: 300px; height: 250px;
+  margin-bottom: 1.5rem; cursor: pointer;
+}
+.trust-cat {
+  position: absolute; bottom: 20px; left: 30px;
+  font-size: 3.5rem; transition: left 0.5s ease;
+}
+.trust-human {
+  position: absolute; bottom: 20px; right: 30px;
+  font-size: 3.5rem; transition: right 0.5s ease;
+}
+.trust-meter {
+  width: 100%; max-width: 300px; height: 8px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px; overflow: hidden; margin-bottom: 0.5rem;
+}
+.trust-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--warm-orange), var(--warm-gold));
+  border-radius: 4px; transition: width 0.5s ease;
+}
+.trust-hint { font-size: 0.85rem; color: rgba(255,255,255,0.5); }
+.trust-heart {
+  position: absolute; font-size: 1.5rem;
+  animation: heartFloat 1.5s ease forwards; pointer-events: none;
+}
+@keyframes heartFloat {
+  0% { opacity: 1; transform: translateY(0) scale(0.5); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+}
+
+/* ===== 第五章 ===== */
+#chapter5 { background: linear-gradient(180deg, #1a5c3a 0%, #82e0aa 100%); }
+.cards-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1rem; max-width: 420px;
+  width: 100%; margin-bottom: 1.5rem;
+}
+.flip-card { aspect-ratio: 3/4; perspective: 800px; cursor: pointer; }
+.flip-card-inner {
+  position: relative; width: 100%; height: 100%;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+.flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
+.flip-card-front, .flip-card-back {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  border-radius: 12px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0.6rem; text-align: center;
+}
+.flip-card-front {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2); font-size: 2rem;
+}
+.flip-card-back {
+  background: rgba(255,255,255,0.95); color: var(--text-dark);
+  transform: rotateY(180deg); font-size: 0.7rem; line-height: 1.4;
+}
+.flip-card-back h4 { font-size: 0.8rem; margin-bottom: 0.3rem; color: #1a5c3a; }
+.cards-progress { font-size: 0.9rem; color: rgba(255,255,255,0.7); }
+
+/* ===== 第六章 ===== */
+#chapter6 {
+  background: linear-gradient(180deg, #f5b041 0%, #fdebd0 100%);
+  color: var(--text-dark);
+}
+#chapter6 .chapter-title { color: #7d5a29; }
+.name-input-area {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 1rem;
+  width: 100%; max-width: 400px;
+}
+.name-input-area input {
+  width: 100%; padding: 1rem 1.5rem;
+  border: 2px solid rgba(125, 90, 41, 0.3);
+  border-radius: 16px; background: rgba(255,255,255,0.7);
+  font-size: 1.2rem;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  color: var(--text-dark); text-align: center;
+  outline: none; transition: border-color 0.3s;
+}
+.name-input-area input:focus { border-color: var(--warm-orange); }
+.name-input-area input::placeholder { color: rgba(125, 90, 41, 0.4); }
+.name-suggestions {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+}
+.name-tag {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(125, 90, 41, 0.2);
+  border-radius: 20px; padding: 0.4rem 1rem;
+  font-size: 0.9rem; cursor: pointer;
+  transition: all 0.3s; color: var(--text-dark);
+}
+.name-tag:active { background: var(--warm-orange); color: white; }
+.sunshine-particles {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden;
+}
+.sun-particle {
+  position: absolute; width: 6px; height: 6px;
+  background: rgba(245, 176, 65, 0.4); border-radius: 50%;
+  animation: sunFloat 4s ease-in-out infinite;
+}
+@keyframes sunFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+  50% { transform: translateY(-40px) scale(1.5); opacity: 0.7; }
+}
+.cat-transform { font-size: 5rem; margin-bottom: 1rem; transition: all 1s ease; }
+
+/* ===== 结果页 ===== */
+#result-page {
+  background: var(--warm-cream); color: var(--text-dark);
+  overflow-y: auto; padding: 2rem 1.5rem;
+}
+.result-card {
+  background: white; border-radius: 24px;
+  padding: 2rem; max-width: 420px; width: 100%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08); position: relative;
+}
+.result-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--warm-orange), var(--warm-gold), var(--mint));
+  border-radius: 24px 24px 0 0;
+}
+.result-header { text-align: center; margin-bottom: 1.5rem; }
+.result-header h2 {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.5rem; color: #7d5a29;
+}
+.result-cat { font-size: 4rem; display: block; margin: 0.5rem 0; }
+.result-cat-name {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.3rem; color: var(--warm-orange);
+}
+.personality-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--warm-orange), var(--warm-gold));
+  color: white; padding: 0.5rem 1.5rem; border-radius: 30px;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.1rem; margin: 1rem 0;
+}
+.radar-chart { width: 240px; height: 240px; margin: 1.5rem auto; }
+.stat-bars { margin: 1.5rem 0; }
+.stat-bar { margin-bottom: 0.8rem; }
+.stat-bar label {
+  font-size: 0.85rem; color: #666;
+  display: flex; justify-content: space-between; margin-bottom: 0.3rem;
+}
+.stat-bar-track {
+  height: 8px; background: #f0f0f0;
+  border-radius: 4px; overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%; border-radius: 4px;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.social-work-note {
+  background: #fef9e7;
+  border-left: 3px solid var(--warm-orange);
+  padding: 1rem; border-radius: 0 12px 12px 0;
+  margin: 1.5rem 0; font-size: 0.9rem;
+  line-height: 1.8; color: #5a4a3a;
+}
+.reality-stats {
+  background: #fdf2e9; padding: 1rem;
+  border-radius: 12px; margin: 1.5rem 0; text-align: center;
+}
+.reality-stats h4 { color: var(--danger-red); margin-bottom: 0.5rem; font-size: 0.95rem; }
+.reality-stats p { font-size: 0.85rem; color: #666; line-height: 1.6; }
+.share-section { text-align: center; margin-top: 1.5rem; }
+.share-section p { font-size: 0.8rem; color: #999; margin-bottom: 1rem; }
+.btn-save {
+  background: linear-gradient(135deg, var(--warm-orange), #d4845a);
+  color: white; border: none; border-radius: 50px;
+  padding: 0.8rem 2rem; font-size: 1rem;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  cursor: pointer; transition: all 0.3s; margin: 0 0.5rem;
+  -webkit-appearance: none;
+}
+.btn-save:active { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(232,168,124,0.4); }
+.btn-restart {
+  background: transparent; border: 1px solid #ccc;
+  border-radius: 50px; padding: 0.8rem 2rem;
+  font-size: 1rem; font-family: 'ZCOOL KuaiLe', cursive;
+  color: #999; cursor: pointer; transition: all 0.3s;
+  -webkit-appearance: none;
+}
+.btn-restart:active { border-color: var(--warm-orange); color: var(--warm-orange); }
+.hashtags { margin-top: 1rem; font-size: 0.8rem; color: var(--warm-orange); }
+
+@media (max-width: 480px) {
+  .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+  .result-card { padding: 1.5rem; }
+  .road { height: 280px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="progress-bar" style="width: 0%"></div>
+
+  <!-- 开始页 -->
+  <div id="start-page" class="chapter active">
+    <span class="cat-emoji-large">🐱</span>
+    <h1>如果我是一只流浪猫</h1>
+    <p class="subtitle">一个关于勇气、信任与回家的故事<br>你准备好了吗？</p>
+    <button class="btn-start" id="btn-start">开始我的旅程</button>
+  </div>
+
+  <!-- 序章 -->
+  <div id="prologue" class="chapter">
+    <div class="rain-container" id="rain-container"></div>
+    <div style="z-index:2; text-align:center; padding: 2rem;">
+      <div class="chapter-title" style="animation-delay:0.3s">序章</div>
+      <div class="narrative" style="animation-delay:0.6s">
+        我是一只橘猫。<br>我记不清自己是怎么来到这个城市的角落的。<br>
+        我只知道，从今天起，<br>一切要靠我自己了。
+      </div>
+      <button class="btn-continue" id="btn-prologue-next">继续 →</button>
+    </div>
+    <div class="blur-overlay" id="blur-overlay">
+      <span class="hint">👆 滑动擦除迷雾，看见我的世界</span>
+    </div>
+  </div>
+
+  <!-- 第一章 -->
+  <div id="chapter1" class="chapter">
+    <div class="shelter-visual"><span class="cat-silhouette">🐈</span></div>
+    <div class="chapter-title" style="color: var(--cold-light)">第一章 · 第一夜</div>
+    <div class="narrative" style="animation-delay:0.3s">
+      天黑了。我需要找到一个安全的地方过夜。<br>帮我选择一个栖息地吧……
+    </div>
+    <div class="choices" id="ch1-choices">
+      <button class="choice-btn" data-choice="box">
+        <span class="emoji">📦</span> 垃圾桶旁的纸箱 — 看起来还算干燥
+      </button>
+      <button class="choice-btn" data-choice="car">
+        <span class="emoji">🚗</span> 停着的车底 — 暖和但有点危险
+      </button>
+      <button class="choice-btn" data-choice="bush">
+        <span class="emoji">🌿</span> 灌木丛深处 — 隐蔽但会冷
+      </button>
+    </div>
+    <div id="ch1-result" style="display:none; text-align:center;">
+      <div class="narrative" id="ch1-result-text" style="font-size:0.95rem;"></div>
+      <button class="btn-continue" id="btn-ch1-next">继续 →</button>
+    </div>
+  </div>
+
+  <!-- 第二章 -->
+  <div id="chapter2" class="chapter">
+    <div class="chapter-title" style="color: var(--cold-light)">第二章 · 觅食之路</div>
+    <div class="narrative" style="animation-delay:0.3s; font-size:0.95rem;">
+      第二天，肚子饿得咕咕叫。<br>把食物拖到我这里来吧！
+    </div>
+    <div class="food-area" id="food-area">
+      <span class="food-item" id="food1" style="top:20px;left:20px;">🐟</span>
+      <span class="food-item" id="food2" style="top:20px;right:20px;">🍖</span>
+      <span class="food-item" id="food3" style="top:80px;left:50%;">🥛</span>
+      <span class="food-item" id="food4" style="top:130px;left:30px;">🐭</span>
+      <span class="cat-target" id="cat-target">🐈</span>
+    </div>
+    <div class="food-info" id="food-info">拖动食物到猫咪身边 🐱</div>
+    <div id="ch2-done" style="display:none; text-align:center;">
+      <div class="narrative" style="font-size:0.9rem;">
+        在中国，约有 <strong style="color:var(--warm-gold);">6000万只</strong> 流浪猫，<br>
+        它们每天为食物奔波 3-5 公里。<br>你的每一次善意投喂，都是一个小奇迹。
+      </div>
+      <button class="btn-continue" id="btn-ch2-next">继续 →</button>
+    </div>
+  </div>
+
+  <!-- 第三章 -->
+  <div id="chapter3" class="chapter">
+    <div class="chapter-title" style="color: #e74c3c;">第三章 · 危险降临</div>
+    <div class="narrative" style="animation-delay:0.3s; font-size:0.9rem;">
+      一声急刹车！帮我躲避来往的车辆！<br>
+      <span style="font-size:0.8rem;color:rgba(255,255,255,0.5)">← 点击左右移动猫咪 →</span>
+    </div>
+    <div class="score-display" id="dodge-score">安全值: ❤️❤️❤️❤️❤️</div>
+    <div class="road" id="road">
+      <div class="cat-crossing" id="cat-crossing" style="left: calc(50% - 20px);">🐈</div>
+    </div>
+    <div id="ch3-result" style="display:none; text-align:center;">
+      <div class="narrative" style="font-size:0.9rem;" id="ch3-result-text"></div>
+      <button class="btn-continue" id="btn-ch3-next">继续 →</button>
+    </div>
+  </div>
+
+  <!-- 第四章 -->
+  <div id="chapter4" class="chapter">
+    <div class="chapter-title" style="color: var(--warm-cream);">第四章 · 一双温暖的手</div>
+    <div class="narrative" style="animation-delay:0.3s; font-size:0.9rem;">
+      有人蹲下来了。她没有嫌我脏，没有赶我走。<br>
+      <span style="font-size:0.8rem;">慢慢点击屏幕，让我试着靠近她……</span>
+    </div>
+    <div class="trust-scene" id="trust-scene">
+      <span class="trust-cat" id="trust-cat">🐈</span>
+      <span class="trust-human" id="trust-human">🧎‍♀️</span>
+    </div>
+    <div class="trust-meter">
+      <div class="trust-meter-fill" id="trust-fill" style="width:0%"></div>
+    </div>
+    <div class="trust-hint" id="trust-hint">信任度：0%</div>
+    <div id="ch4-done" style="display:none; text-align:center;">
+      <div class="narrative" style="font-size:0.9rem; color: var(--text-dark);">
+        "你选择信任，这需要巨大的勇气。<br>
+        在社工的世界里，这叫 <strong>赋权</strong> ——<br>不是被拯救，而是你自己选择了相信。"
+      </div>
+      <button class="btn-continue" style="color:var(--text-dark);border-color:rgba(0,0,0,0.2);" id="btn-ch4-next">继续 →</button>
+    </div>
+  </div>
+
+  <!-- 第五章 -->
+  <div id="chapter5" class="chapter">
+    <div class="chapter-title" style="color: white;">第五章 · 救助站的一天</div>
+    <div class="narrative" style="animation-delay:0.3s; font-size:0.9rem; color: white;">
+      我来到了一个叫"救助站"的地方。<br>翻开卡片，了解这里的秘密吧！
+    </div>
+    <div class="cards-grid" id="cards-grid"></div>
+    <div class="cards-progress" id="cards-progress" style="color:white;">已翻开: 0 / 6</div>
+    <div id="ch5-done" style="display:none; text-align:center;">
+      <div class="narrative" style="font-size:0.9rem; color: white;">
+        每一只被救助的动物背后，<br>都有一张社会支持网络在运作。<br>这就是 <strong>社区资源的力量</strong>。
+      </div>
+      <button class="btn-continue" id="btn-ch5-next">继续 →</button>
+    </div>
+  </div>
+
+  <!-- 第六章 -->
+  <div id="chapter6" class="chapter">
+    <div class="sunshine-particles" id="sun-particles"></div>
+    <div class="cat-transform" id="cat-transform">🐈</div>
+    <div class="chapter-title">第六章 · 新的开始</div>
+    <div class="narrative" style="animation-delay:0.3s; color: var(--text-dark);">
+      有人在领养平台上看到了我的照片。<br>这一次，我有了一个家，有了一个名字。<br>
+      <strong>帮我取个名字吧？</strong>
+    </div>
+    <div class="name-input-area">
+      <input type="text" id="cat-name-input" placeholder="输入一个名字..." maxlength="8">
+      <div class="name-suggestions" id="name-suggestions">
+        <span class="name-tag" data-name="小橘">🍊 小橘</span>
+        <span class="name-tag" data-name="暖暖">☀️ 暖暖</span>
+        <span class="name-tag" data-name="年糕">🍡 年糕</span>
+        <span class="name-tag" data-name="星星">⭐ 星星</span>
+        <span class="name-tag" data-name="豆豆">🫘 豆豆</span>
+        <span class="name-tag" data-name="Lucky">🍀 Lucky</span>
+      </div>
+      <button class="btn-start" style="margin-top:1rem; font-size:1rem; padding:0.8rem 2rem;" id="btn-finish">确定名字，开始新生活 ✨</button>
+    </div>
+  </div>
+
+  <!-- 结果页 -->
+  <div id="result-page" class="chapter">
+    <div class="result-card" id="result-card">
+      <div class="result-header">
+        <h2>如果我是一只流浪猫</h2>
+        <span class="result-cat" id="result-cat">🐱</span>
+        <div class="result-cat-name" id="result-cat-name"></div>
+      </div>
+      <div style="text-align:center;">
+        <div class="personality-badge" id="personality-badge"></div>
+      </div>
+      <canvas class="radar-chart" id="radar-chart"></canvas>
+      <div class="stat-bars" id="stat-bars"></div>
+      <div class="social-work-note" id="sw-note"></div>
+      <div class="reality-stats">
+        <h4>🐾 现实中的它们</h4>
+        <p>中国每年约有 <strong>数百万只</strong> 流浪猫面临生存困境，<br>
+        被成功救助的不到 <strong>5%</strong>。<br>你的每一次分享，都是一次倡导。</p>
+      </div>
+      <div class="share-section">
+        <p>截图保存到相册，分享到小红书 📱</p>
+        <button class="btn-save" id="btn-save">📸 保存结果</button>
+        <button class="btn-restart" id="btn-restart">🔄 再来一次</button>
+        <div class="hashtags">#如果我是一只流浪猫 #流浪猫生存报告 #社工视角看世界 #领养代替购买</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+'use strict';
+
+// ===== 游戏状态 =====
+var state = {
+  currentChapter: -1,
+  scores: { independent: 0, connect: 0, cautious: 0, adventurous: 0 },
+  catName: '小橘',
+  foodCount: 0,
+  dodgeHP: 5,
+  trustLevel: 0,
+  cardsFlipped: 0,
+  dodgeTimer: null,
+  dodgeActive: false
+};
+
+// ===== 工具函数 =====
+function $(id) { return document.getElementById(id); }
+function $$(sel) { return document.querySelectorAll(sel); }
+
+function showChapter(id) {
+  var chapters = $$('.chapter');
+  for (var i = 0; i < chapters.length; i++) {
+    chapters[i].classList.remove('active');
+  }
+  $(id).classList.add('active');
+}
+
+function updateProgress(pct) {
+  $('progress-bar').style.width = pct + '%';
+}
+
+// ===== 导航 =====
+function startExperience() {
+  state.currentChapter = 0;
+  showChapter('prologue');
+  updateProgress(5);
+  createRain();
+}
+
+function goToChapter(n) {
+  state.currentChapter = n;
+  var ids = ['', 'chapter1', 'chapter2', 'chapter3', 'chapter4', 'chapter5', 'chapter6'];
+  if (n >= 1 && n <= 6) {
+    showChapter(ids[n]);
+    updateProgress(5 + n * 14);
+  }
+  if (n === 2) initFoodDrag();
+  if (n === 3) startDodgeGame();
+  if (n === 4) initTrust();
+  if (n === 5) initCards();
+  if (n === 6) initSunshine();
+}
+
+// ===== 绑定所有按钮事件 =====
+document.addEventListener('DOMContentLoaded', function() {
+  // 开始按钮
+  $('btn-start').addEventListener('click', startExperience);
+  $('btn-start').addEventListener('touchend', function(e) { e.preventDefault(); startExperience(); });
+
+  // 序章继续
+  $('btn-prologue-next').addEventListener('click', function() { goToChapter(1); });
+  $('btn-prologue-next').addEventListener('touchend', function(e) { e.preventDefault(); goToChapter(1); });
+
+  // 各章继续按钮
+  var nextBtns = { 'btn-ch1-next': 2, 'btn-ch2-next': 3, 'btn-ch3-next': 4, 'btn-ch4-next': 5, 'btn-ch5-next': 6 };
+  Object.keys(nextBtns).forEach(function(id) {
+    var target = nextBtns[id];
+    $(id).addEventListener('click', function() { goToChapter(target); });
+    $(id).addEventListener('touchend', function(e) { e.preventDefault(); goToChapter(target); });
+  });
+
+  // 第一章选项
+  var ch1Btns = $$('#ch1-choices .choice-btn');
+  ch1Btns.forEach(function(btn) {
+    var handler = function(e) { e.preventDefault(); chooseChapter1(btn.getAttribute('data-choice')); };
+    btn.addEventListener('click', handler);
+    btn.addEventListener('touchend', handler);
+  });
+
+  // 第六章名字选择
+  var nameTags = $$('#name-suggestions .name-tag');
+  nameTags.forEach(function(tag) {
+    var handler = function(e) { e.preventDefault(); pickName(tag.getAttribute('data-name')); };
+    tag.addEventListener('click', handler);
+    tag.addEventListener('touchend', handler);
+  });
+
+  // 完成按钮
+  $('btn-finish').addEventListener('click', finishJourney);
+  $('btn-finish').addEventListener('touchend', function(e) { e.preventDefault(); finishJourney(); });
+
+  // 结果页按钮
+  $('btn-save').addEventListener('click', saveScreenshot);
+  $('btn-save').addEventListener('touchend', function(e) { e.preventDefault(); saveScreenshot(); });
+  $('btn-restart').addEventListener('click', restart);
+  $('btn-restart').addEventListener('touchend', function(e) { e.preventDefault(); restart(); });
+
+  // 序章模糊擦除
+  var overlay = $('blur-overlay');
+  overlay.addEventListener('touchstart', handleBlurTouch, { passive: false });
+  overlay.addEventListener('touchmove', handleBlurTouch, { passive: false });
+  overlay.addEventListener('mousedown', startBlurDrag);
+  overlay.addEventListener('mousemove', handleBlurDrag);
+  overlay.addEventListener('mouseup', endBlurDrag);
+
+  // 第三章马路
+  var road = $('road');
+  road.addEventListener('touchstart', handleRoadTouch, { passive: false });
+  road.addEventListener('click', handleRoadClick);
+
+  // 第四章信任
+  var trustScene = $('trust-scene');
+  trustScene.addEventListener('click', buildTrust);
+  trustScene.addEventListener('touchend', function(e) { e.preventDefault(); buildTrust(); });
+});
+
+// ===== 序章：雨 + 擦除模糊 =====
+function createRain() {
+  var container = $('rain-container');
+  container.innerHTML = '';
+  for (var i = 0; i < 60; i++) {
+    var drop = document.createElement('div');
+    drop.className = 'raindrop';
+    drop.style.left = Math.random() * 100 + '%';
+    drop.style.height = (15 + Math.random() * 25) + 'px';
+    drop.style.animationDuration = (0.4 + Math.random() * 0.5) + 's';
+    drop.style.animationDelay = Math.random() * 2 + 's';
+    drop.style.opacity = 0.3 + Math.random() * 0.4;
+    container.appendChild(drop);
+  }
+}
+
+var blurDragging = false, blurProgress = 0;
+function startBlurDrag(e) { blurDragging = true; clearBlurArea(e); }
+function handleBlurDrag(e) { if (blurDragging) clearBlurArea(e); }
+function endBlurDrag() { blurDragging = false; }
+function handleBlurTouch(e) { e.preventDefault(); clearBlurArea(e.touches[0]); }
+
+function clearBlurArea(e) {
+  var overlay = $('blur-overlay');
+  var rect = overlay.getBoundingClientRect();
+  var x = (e.clientX || e.pageX) - rect.left;
+  var y = (e.clientY || e.pageY) - rect.top;
+  blurProgress += 2;
+  var size = 80 + blurProgress * 2;
+  overlay.style.background = 'radial-gradient(circle ' + size + 'px at ' + x + 'px ' + y + 'px, transparent 0%, rgba(26,26,46,0.6) 100%)';
+  overlay.style.webkitBackdropFilter = 'blur(' + Math.max(0, 20 - blurProgress) + 'px)';
+  overlay.style.backdropFilter = 'blur(' + Math.max(0, 20 - blurProgress) + 'px)';
+  if (blurProgress > 40) overlay.style.opacity = Math.max(0, 1 - (blurProgress - 40) / 20);
+  if (blurProgress > 60) overlay.style.display = 'none';
+}
+
+// ===== 第一章 =====
+function chooseChapter1(choice) {
+  var texts = {
+    box: '纸箱里有一股旧报纸的味道。虽然不暖和，但至少不会被雨淋到。你做出了保护自己的选择——这就够了。',
+    car: '车底暖暖的，但你整夜都保持着警惕。天亮时，你听到引擎声，飞快地跑了出来。你学会了在温暖中保持警觉。',
+    bush: '灌木丛很深，风吹过来有点冷。但你蜷缩成一团，用自己毛茸茸的身体温暖自己。你比自己想象的更坚强。'
+  };
+  var scores = { box: { cautious: 2 }, car: { adventurous: 2 }, bush: { independent: 2 } };
+  var s = scores[choice];
+  if (s) Object.keys(s).forEach(function(k) { state.scores[k] += s[k]; });
+
+  $('ch1-choices').style.display = 'none';
+  $('ch1-result').style.display = 'block';
+  $('ch1-result-text').innerHTML = texts[choice];
+}
+
+// ===== 第二章：拖拽食物 =====
+var dragFood = null, dragOffsetX = 0, dragOffsetY = 0;
+
+function initFoodDrag() {
+  var foods = $$('.food-item');
+  foods.forEach(function(food) {
+    food.addEventListener('touchstart', function(e) { startDragFood(e, food); }, { passive: false });
+    food.addEventListener('mousedown', function(e) { startDragFood(e, food); });
+  });
+  document.addEventListener('touchmove', moveDragFoodTouch, { passive: false });
+  document.addEventListener('mousemove', moveDragFood);
+  document.addEventListener('touchend', endDragFood);
+  document.addEventListener('mouseup', endDragFood);
+}
+
+function startDragFood(e, food) {
+  e.preventDefault(); e.stopPropagation();
+  if (food.classList.contains('eaten')) return;
+  dragFood = food;
+  dragFood.classList.add('dragging');
+  var rect = dragFood.getBoundingClientRect();
+  var point = e.touches ? e.touches[0] : e;
+  dragOffsetX = point.clientX - rect.left;
+  dragOffsetY = point.clientY - rect.top;
+}
+
+function moveDragFood(e) {
+  if (!dragFood) return;
+  dragFood.style.position = 'fixed';
+  dragFood.style.left = (e.clientX - dragOffsetX) + 'px';
+  dragFood.style.top = (e.clientY - dragOffsetY) + 'px';
+  dragFood.style.zIndex = '999';
+}
+
+function moveDragFoodTouch(e) {
+  if (!dragFood) return;
+  e.preventDefault();
+  var t = e.touches[0];
+  dragFood.style.position = 'fixed';
+  dragFood.style.left = (t.clientX - dragOffsetX) + 'px';
+  dragFood.style.top = (t.clientY - dragOffsetY) + 'px';
+  dragFood.style.zIndex = '999';
+}
+
+function endDragFood() {
+  if (!dragFood) return;
+  dragFood.classList.remove('dragging');
+  var cat = $('cat-target');
+  var catRect = cat.getBoundingClientRect();
+  var foodRect = dragFood.getBoundingClientRect();
+  var dist = Math.hypot(
+    (catRect.left + catRect.width/2) - (foodRect.left + foodRect.width/2),
+    (catRect.top + catRect.height/2) - (foodRect.top + foodRect.height/2)
+  );
+  if (dist < 80) {
+    dragFood.classList.add('eaten');
+    dragFood.style.opacity = '0';
+    dragFood.style.transition = 'all 0.5s';
+    state.foodCount++;
+    var foodData = { food1: 'independent', food2: 'adventurous', food3: 'connect', food4: 'independent' };
+    if (foodData[dragFood.id]) state.scores[foodData[dragFood.id]]++;
+    $('food-info').textContent = '好吃！已吃掉 ' + state.foodCount + ' 份食物 🐱';
+    if (state.foodCount >= 3) {
+      setTimeout(function() {
+        $('ch2-done').style.display = 'block';
+        $('food-area').style.opacity = '0.3';
+      }, 500);
+    }
+  }
+  dragFood = null;
+}
+
+// ===== 第三章：躲避游戏 =====
+function startDodgeGame() {
+  state.dodgeHP = 5;
+  state.dodgeActive = true;
+  var road = $('road');
+  var cat = $('cat-crossing');
+  var cars = [];
+  var dodgeScore = 0;
+
+  for (var i = 0; i < 5; i++) {
+    var line = document.createElement('div');
+    line.className = 'road-line';
+    line.style.top = (i * 80) + 'px';
+    line.style.animationDelay = (i * 0.16) + 's';
+    road.appendChild(line);
+  }
+
+  var carInterval = setInterval(function() {
+    if (!state.dodgeActive) { clearInterval(carInterval); return; }
+    var car = document.createElement('div');
+    car.className = 'car';
+    car.textContent = Math.random() > 0.5 ? '🚗' : '🚙';
+    car.style.left = (10 + Math.random() * 60) + '%';
+    car.style.top = '-40px';
+    road.appendChild(car);
+    cars.push(car);
+  }, 800);
+
+  var moveInterval = setInterval(function() {
+    if (!state.dodgeActive) { clearInterval(moveInterval); return; }
+    var catRect = cat.getBoundingClientRect();
+    var catCX = catRect.left + catRect.width / 2;
+    var catCY = catRect.top + catRect.height / 2;
+
+    for (var i = cars.length - 1; i >= 0; i--) {
+      var car = cars[i];
+      var top = parseFloat(car.style.top) || 0;
+      car.style.top = (top + 4) + 'px';
+      if (top > 350) {
+        car.remove();
+        cars.splice(i, 1);
+        dodgeScore++;
+      } else {
+        var carRect = car.getBoundingClientRect();
+        var dist = Math.hypot(
+          (carRect.left + carRect.width/2) - catCX,
+          (carRect.top + carRect.height/2) - catCY
+        );
+        if (dist < 40 && !car.dataset.hit) {
+          car.dataset.hit = 'true';
+          state.dodgeHP--;
+          cat.textContent = '😿';
+          setTimeout(function() { cat.textContent = '🐈'; }, 400);
+          updateDodgeHP();
+          if (state.dodgeHP <= 0) endDodgeGame();
+        }
+      }
+    }
+    if (dodgeScore >= 12) endDodgeGame();
+  }, 30);
+
+  function endDodgeGame() {
+    if (!state.dodgeActive) return;
+    state.dodgeActive = false;
+    clearInterval(carInterval);
+    clearInterval(moveInterval);
+    if (state.dodgeHP > 0) {
+      state.scores.adventurous += 2;
+      $('ch3-result-text').innerHTML = '你灵活地躲过了所有车辆！但很多流浪猫没能这么幸运……<br>每年有大量流浪动物因交通事故伤亡。<br>这不只是个体的不幸，更是 <strong>系统性的问题</strong>。';
+    } else {
+      state.scores.cautious += 2;
+      $('ch3-result-text').innerHTML = '虽然被擦到了，但你还是挺过来了。<br>城市里的流浪，每一步都是冒险。<br>社工相信：<strong>改变需要从制度开始</strong>。';
+    }
+    $('road').style.opacity = '0.3';
+    $('ch3-result').style.display = 'block';
+  }
+}
+
+function updateDodgeHP() {
+  var hearts = '';
+  for (var i = 0; i < 5; i++) hearts += i < state.dodgeHP ? '❤️' : '🖤';
+  $('dodge-score').textContent = '安全值: ' + hearts;
+}
+
+function handleRoadTouch(e) { e.preventDefault(); moveCatTo(e.touches[0]); }
+function handleRoadClick(e) { moveCatTo(e); }
+function moveCatTo(e) {
+  var road = $('road');
+  var rect = road.getBoundingClientRect();
+  var x = e.clientX - rect.left;
+  var cat = $('cat-crossing');
+  var pct = Math.max(5, Math.min(85, (x / rect.width) * 100));
+  cat.style.left = 'calc(' + pct + '% - 20px)';
+}
+
+// ===== 第四章：信任 =====
+function initTrust() {
+  state.trustLevel = 0;
+}
+
+function buildTrust() {
+  if (state.trustLevel >= 100) return;
+  state.trustLevel = Math.min(100, state.trustLevel + 8);
+  var cat = $('trust-cat');
+  var human = $('trust-human');
+  var fill = $('trust-fill');
+  var hint = $('trust-hint');
+  var catLeft = 30 + state.trustLevel * 0.8;
+  var humanRight = 30 + state.trustLevel * 0.5;
+  cat.style.left = catLeft + 'px';
+  human.style.right = humanRight + 'px';
+  fill.style.width = state.trustLevel + '%';
+  var labels = ['警惕...', '犹豫...', '好奇...', '靠近...', '蹭蹭！💕'];
+  var idx = Math.min(4, Math.floor(state.trustLevel / 20));
+  hint.textContent = labels[idx];
+  if (state.trustLevel % 16 === 0) {
+    var heart = document.createElement('span');
+    heart.className = 'trust-heart';
+    heart.textContent = '💕';
+    heart.style.left = catLeft + 'px';
+    heart.style.bottom = '80px';
+    $('trust-scene').appendChild(heart);
+    setTimeout(function() { heart.remove(); }, 1500);
+  }
+  if (state.trustLevel >= 100) {
+    state.scores.connect += 3;
+    setTimeout(function() { $('ch4-done').style.display = 'block'; }, 800);
+  }
+}
+
+// ===== 第五章：翻翻乐 =====
+var cardData = [
+  { emoji: '🏥', title: 'TNR 是什么？', desc: '捕捉-绝育-放归（Trap-Neuter-Return），是目前国际公认最人道的流浪动物管理方式。' },
+  { emoji: '💉', title: '疫苗的意义', desc: '接种疫苗不仅保护个体，也保护整个社区，阻断狂犬病等人畜共患病的传播链。' },
+  { emoji: '🏠', title: '领养代替购买', desc: '每一只被领养的动物，都意味着救助站多出一个位置，给下一个需要帮助的生命。' },
+  { emoji: '🤝', title: '志愿者网络', desc: '救助站的日常运转依靠大量志愿者的协作，这就是"非正式社会支持网络"的力量。' },
+  { emoji: '📋', title: '社区治理', desc: '许多城市已开始推行文明养宠条例，从制度层面减少遗弃行为的发生。' },
+  { emoji: '💛', title: '社工的参与', desc: '社会工作关注人与环境的互动，动物福利也是社工实务的重要议题之一。' }
+];
+
+function initCards() {
+  var grid = $('cards-grid');
+  grid.innerHTML = '';
+  state.cardsFlipped = 0;
+  cardData.forEach(function(card, i) {
+    var el = document.createElement('div');
+    el.className = 'flip-card';
+    el.innerHTML = '<div class="flip-card-inner"><div class="flip-card-front">' + card.emoji +
+      '</div><div class="flip-card-back"><h4>' + card.title + '</h4><p>' + card.desc + '</p></div></div>';
+    el.addEventListener('click', function() { flipCard(el); });
+    el.addEventListener('touchend', function(e) { e.preventDefault(); flipCard(el); });
+    grid.appendChild(el);
+  });
+}
+
+function flipCard(el) {
+  if (el.classList.contains('flipped')) return;
+  el.classList.add('flipped');
+  state.cardsFlipped++;
+  state.scores.connect++;
+  $('cards-progress').textContent = '已翻开: ' + state.cardsFlipped + ' / 6';
+  if (state.cardsFlipped >= 6) {
+    setTimeout(function() { $('ch5-done').style.display = 'block'; }, 600);
+  }
+}
+
+// ===== 第六章 =====
+function initSunshine() {
+  var container = $('sun-particles');
+  container.innerHTML = '';
+  for (var i = 0; i < 20; i++) {
+    var p = document.createElement('div');
+    p.className = 'sun-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 4 + 's';
+    p.style.animationDuration = (3 + Math.random() * 3) + 's';
+    container.appendChild(p);
+  }
+}
+
+function pickName(name) {
+  $('cat-name-input').value = name;
+}
+
+function finishJourney() {
+  var name = $('cat-name-input').value.trim() || '小橘';
+  state.catName = name;
+  showResult();
+}
+
+// ===== 结果页 =====
+function showResult() {
+  showChapter('result-page');
+  updateProgress(100);
+  $('result-cat-name').textContent = '我的名字是 ' + state.catName;
+
+  var s = state.scores;
+  var indAxis = s.independent - s.connect;
+  var openAxis = s.adventurous - s.cautious;
+  var personality, desc;
+  if (indAxis <= 0 && openAxis <= 0) {
+    personality = '🛡️ 智慧的守望者';
+    desc = '你谨慎而有耐心。你会仔细观察，等待最好的时机。在社工眼中，这种"反思性实践"是最珍贵的品质之一。';
+  } else if (indAxis <= 0 && openAxis > 0) {
+    personality = '💕 温暖的信任者';
+    desc = '你愿意相信，也愿意冒险。你相信每一个善意的连接都有力量。这就是社工所说的"赋权"——在信任中获得力量。';
+  } else if (indAxis > 0 && openAxis <= 0) {
+    personality = '🌙 坚韧的独行侠';
+    desc = '你独立而坚韧。即使孤身一人，你也能找到生存的方式。优势视角告诉我们：你的独立性本身就是一种力量。';
+  } else {
+    personality = '🌟 温柔的冒险家';
+    desc = '你勇敢又独立，敢于探索未知。在社工的世界里，这种"抗逆力"（Resilience）是每个人内在的宝藏。';
+  }
+  $('personality-badge').textContent = personality;
+
+  var stats = [
+    { label: '独立生存力', value: Math.min(95, 40 + s.independent * 10), color: '#e67e22' },
+    { label: '信任建立力', value: Math.min(95, 40 + s.connect * 8), color: '#e74c3c' },
+    { label: '环境适应力', value: Math.min(95, 40 + s.adventurous * 8), color: '#27ae60' },
+    { label: '危机应对力', value: Math.min(95, 30 + state.dodgeHP * 12), color: '#2980b9' },
+    { label: '社会连接力', value: Math.min(95, 30 + state.foodCount * 10 + state.cardsFlipped * 5), color: '#8e44ad' }
+  ];
+
+  var barsContainer = $('stat-bars');
+  barsContainer.innerHTML = '';
+  stats.forEach(function(stat, i) {
+    var bar = document.createElement('div');
+    bar.className = 'stat-bar';
+    bar.innerHTML = '<label><span>' + stat.label + '</span><span>' + stat.value + '%</span></label>' +
+      '<div class="stat-bar-track"><div class="stat-bar-fill" style="width:0%;background:' + stat.color + '"></div></div>';
+    barsContainer.appendChild(bar);
+    setTimeout(function() {
+      bar.querySelector('.stat-bar-fill').style.width = stat.value + '%';
+    }, 300 + i * 200);
+  });
+
+  setTimeout(function() { drawRadar(stats); }, 500);
+  $('sw-note').innerHTML = '<strong>社工说：</strong><br>' + desc;
+}
+
+function drawRadar(stats) {
+  var canvas = $('radar-chart');
+  var ctx = canvas.getContext('2d');
+  var W = 240, H = 240;
+  canvas.width = W * 2; canvas.height = H * 2;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(2, 2);
+  var cx = W / 2, cy = H / 2, R = 90;
+  var n = stats.length;
+  var angleStep = (Math.PI * 2) / n;
+
+  for (var level = 1; level <= 4; level++) {
+    ctx.beginPath();
+    var r = R * level / 4;
+    for (var i = 0; i <= n; i++) {
+      var a = -Math.PI / 2 + i * angleStep;
+      var x = cx + Math.cos(a) * r;
+      var y = cy + Math.sin(a) * r;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  for (var i = 0; i < n; i++) {
+    var a = -Math.PI / 2 + i * angleStep;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.stroke();
+    var lx = cx + Math.cos(a) * (R + 18);
+    var ly = cy + Math.sin(a) * (R + 18);
+    ctx.font = '10px sans-serif';
+    ctx.fillStyle = '#888';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(stats[i].label.replace('力', ''), lx, ly);
+  }
+
+  ctx.beginPath();
+  stats.forEach(function(stat, i) {
+    var a = -Math.PI / 2 + i * angleStep;
+    var r = R * stat.value / 100;
+    var x = cx + Math.cos(a) * r;
+    var y = cy + Math.sin(a) * r;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(232, 168, 124, 0.25)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(232, 168, 124, 0.8)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  stats.forEach(function(stat, i) {
+    var a = -Math.PI / 2 + i * angleStep;
+    var r = R * stat.value / 100;
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 4, 0, Math.PI * 2);
+    ctx.fillStyle = stat.color;
+    ctx.fill();
+  });
+}
+
+function saveScreenshot() {
+  alert('请截图保存结果页！\n\n手机：同时按 电源键 + 音量下\n电脑：按 Ctrl + Shift + S\n\n然后分享到小红书，带上标签：\n#如果我是一只流浪猫 #流浪猫生存报告');
+}
+
+function restart() {
+  state.currentChapter = -1;
+  state.scores = { independent: 0, connect: 0, cautious: 0, adventurous: 0 };
+  state.catName = '小橘';
+  state.foodCount = 0;
+  state.dodgeHP = 5;
+  state.trustLevel = 0;
+  state.cardsFlipped = 0;
+  blurProgress = 0;
+
+  var overlay = $('blur-overlay');
+  overlay.style.opacity = '1';
+  overlay.style.display = 'flex';
+  overlay.style.webkitBackdropFilter = 'blur(20px)';
+  overlay.style.backdropFilter = 'blur(20px)';
+  overlay.style.background = 'rgba(26, 26, 46, 0.6)';
+
+  $('ch1-choices').style.display = 'flex';
+  $('ch1-result').style.display = 'none';
+  $('ch2-done').style.display = 'none';
+  $('food-area').style.opacity = '1';
+  $('ch3-result').style.display = 'none';
+  $('road').style.opacity = '1';
+  $('ch4-done').style.display = 'none';
+  $('ch5-done').style.display = 'none';
+  $('trust-fill').style.width = '0%';
+  $('trust-cat').style.left = '30px';
+  $('trust-human').style.right = '30px';
+
+  ['food1','food2','food3','food4'].forEach(function(id) {
+    var el = $(id);
+    el.classList.remove('eaten');
+    el.style.opacity = '1';
+    el.style.position = 'absolute';
+    el.style.transition = '';
+    el.style.zIndex = '10';
+  });
+
+  // 清理第三章的车辆
+  var roadCars = $('road').querySelectorAll('.car');
+  roadCars.forEach(function(c) { c.remove(); });
+  var roadLines = $('road').querySelectorAll('.road-line');
+  roadLines.forEach(function(l) { l.remove(); });
+
+  updateProgress(0);
+  showChapter('start-page');
+}
+
+})();
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>如果我是一只流浪猫</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+KuaiLe&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --cold-dark: #1a1a2e;
+  --cold-mid: #2c3e50;
+  --cold-light: #7f8c8d;
+  --warm-orange: #e8a87c;
+  --warm-cream: #fdebd0;
+  --warm-gold: #f5b041;
+  --mint: #82e0aa;
+  --pink-soft: #fadbd8;
+  --danger-red: #922b21;
+  --text-dark: #2c2c2c;
+  --text-light: #f0e6d3;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  font-family: 'Noto Serif SC', serif;
+  background: #0a0a0a;
+  color: var(--text-light);
+}
+
+/* ===== 全局容器 ===== */
+#app {
+  width: 100%; height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== 进度条 ===== */
+#progress-bar {
+  position: fixed; top: 0; left: 0;
+  height: 4px; background: var(--warm-orange);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  box-shadow: 0 0 10px rgba(232, 168, 124, 0.5);
+}
+
+/* ===== 章节通用 ===== */
+.chapter {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 2rem;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.8s ease;
+}
+.chapter.active {
+  opacity: 1; pointer-events: auto;
+}
+
+/* ===== 开始页 ===== */
+#start-page {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  text-align: center;
+}
+#start-page h1 {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: clamp(2rem, 6vw, 3.5rem);
+  color: var(--warm-orange);
+  margin-bottom: 1rem;
+  text-shadow: 0 0 30px rgba(232, 168, 124, 0.3);
+  animation: floatTitle 3s ease-in-out infinite;
+}
+@keyframes floatTitle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+#start-page .subtitle {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  color: #a0a0b0;
+  margin-bottom: 2.5rem;
+  line-height: 1.8;
+}
+.cat-emoji-large {
+  font-size: 5rem;
+  display: block;
+  margin-bottom: 1.5rem;
+  animation: catBounce 2s ease-in-out infinite;
+}
+@keyframes catBounce {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.05) rotate(-3deg); }
+  75% { transform: scale(1.05) rotate(3deg); }
+}
+
+.btn-start {
+  background: linear-gradient(135deg, var(--warm-orange), #d4845a);
+  color: white;
+  border: none; border-radius: 50px;
+  padding: 1rem 3rem;
+  font-size: 1.2rem;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(232, 168, 124, 0.4);
+}
+.btn-start:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 30px rgba(232, 168, 124, 0.6);
+}
+
+/* ===== 叙事文字 ===== */
+.narrative {
+  font-size: clamp(1rem, 2.8vw, 1.25rem);
+  line-height: 2;
+  text-align: center;
+  max-width: 600px;
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeInUp 1s ease forwards;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chapter-title {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  margin-bottom: 1rem;
+  opacity: 0;
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+/* ===== 序章：擦除模糊 ===== */
+#prologue {
+  background: linear-gradient(180deg, #1a1a2e 0%, #2c3e50 100%);
+  position: relative;
+}
+#prologue .blur-overlay {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  backdrop-filter: blur(20px);
+  background: rgba(26, 26, 46, 0.6);
+  transition: opacity 0.3s ease;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab;
+}
+#prologue .blur-overlay .hint {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.6);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+.rain-container {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  overflow: hidden; pointer-events: none;
+}
+.raindrop {
+  position: absolute;
+  width: 2px;
+  background: linear-gradient(transparent, rgba(174, 194, 224, 0.5));
+  animation: rain linear infinite;
+}
+@keyframes rain {
+  from { transform: translateY(-100px); }
+  to { transform: translateY(100vh); }
+}
+
+/* ===== 选项按钮通用 ===== */
+.choices {
+  display: flex; flex-direction: column; gap: 1rem;
+  width: 100%; max-width: 400px;
+}
+.choice-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 16px;
+  padding: 1rem 1.5rem;
+  color: var(--text-light);
+  font-size: 1rem;
+  font-family: 'Noto Serif SC', serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+  backdrop-filter: blur(5px);
+}
+.choice-btn:hover {
+  background: rgba(232, 168, 124, 0.2);
+  border-color: var(--warm-orange);
+  transform: translateX(8px);
+}
+.choice-btn .emoji {
+  font-size: 1.3rem;
+  margin-right: 0.5rem;
+}
+
+/* ===== 继续按钮 ===== */
+.btn-continue {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50px;
+  padding: 0.8rem 2.5rem;
+  color: var(--text-light);
+  font-size: 1rem;
+  font-family: 'Noto Serif SC', serif;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1.5rem;
+}
+.btn-continue:hover {
+  background: rgba(232, 168, 124, 0.2);
+  border-color: var(--warm-orange);
+}
+
+/* ===== 第一章 ===== */
+#chapter1 {
+  background: linear-gradient(180deg, #1a1a2e 0%, #2c3e50 60%, #1a252f 100%);
+}
+.shelter-visual {
+  width: 200px; height: 200px;
+  position: relative;
+  margin-bottom: 2rem;
+}
+.shelter-visual .cat-silhouette {
+  font-size: 6rem;
+  display: block;
+  text-align: center;
+  filter: drop-shadow(0 0 20px rgba(232, 168, 124, 0.3));
+}
+
+/* ===== 第二章：拖拽 ===== */
+#chapter2 {
+  background: linear-gradient(180deg, #2c3e50 0%, #34495e 50%, #5d6d7e 100%);
+}
+.food-area {
+  position: relative;
+  width: 100%; max-width: 500px;
+  height: 300px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.05);
+  border: 1px dashed rgba(255,255,255,0.15);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+.food-item {
+  position: absolute;
+  font-size: 2.5rem;
+  cursor: grab;
+  transition: transform 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.food-item:hover { transform: scale(1.2); }
+.food-item.dragging { cursor: grabbing; opacity: 0.7; }
+.cat-target {
+  position: absolute;
+  bottom: 10px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 4rem;
+}
+.food-info {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  max-width: 400px;
+  line-height: 1.6;
+}
+
+/* ===== 第三章：躲避 ===== */
+#chapter3 {
+  background: linear-gradient(180deg, #1a1a2e 0%, #922b21 100%);
+}
+.road {
+  position: relative;
+  width: 100%; max-width: 400px;
+  height: 350px;
+  background: #2c2c2c;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 2px solid #444;
+}
+.road-line {
+  position: absolute;
+  left: 50%;
+  width: 4px; height: 30px;
+  background: #f1c40f;
+  transform: translateX(-50%);
+  animation: roadMove 0.8s linear infinite;
+}
+@keyframes roadMove {
+  from { transform: translateX(-50%) translateY(-60px); }
+  to { transform: translateX(-50%) translateY(350px); }
+}
+.cat-crossing {
+  position: absolute;
+  bottom: 30px;
+  font-size: 2.5rem;
+  transition: left 0.3s ease;
+  z-index: 10;
+}
+.car {
+  position: absolute;
+  font-size: 2rem;
+  z-index: 5;
+}
+.score-display {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.2rem;
+  color: var(--warm-gold);
+  margin-bottom: 1rem;
+}
+
+/* ===== 第四章：信任 ===== */
+#chapter4 {
+  background: linear-gradient(180deg, #2c3e50 0%, #e8a87c 100%);
+}
+.trust-scene {
+  position: relative;
+  width: 300px; height: 250px;
+  margin-bottom: 1.5rem;
+}
+.trust-cat {
+  position: absolute;
+  bottom: 20px; left: 30px;
+  font-size: 3.5rem;
+  transition: left 0.5s ease;
+}
+.trust-human {
+  position: absolute;
+  bottom: 20px; right: 30px;
+  font-size: 3.5rem;
+  transition: right 0.5s ease;
+}
+.trust-meter {
+  width: 100%; max-width: 300px;
+  height: 8px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+.trust-meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--warm-orange), var(--warm-gold));
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+.trust-hint {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+}
+.trust-heart {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: heartFloat 1.5s ease forwards;
+  pointer-events: none;
+}
+@keyframes heartFloat {
+  0% { opacity: 1; transform: translateY(0) scale(0.5); }
+  100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+}
+
+/* ===== 第五章：翻翻乐 ===== */
+#chapter5 {
+  background: linear-gradient(180deg, #1a5c3a 0%, #82e0aa 100%);
+}
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 420px;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+.flip-card {
+  aspect-ratio: 3/4;
+  perspective: 800px;
+  cursor: pointer;
+}
+.flip-card-inner {
+  position: relative;
+  width: 100%; height: 100%;
+  transition: transform 0.6s ease;
+  transform-style: preserve-3d;
+}
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+.flip-card-front, .flip-card-back {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 0.6rem;
+  text-align: center;
+}
+.flip-card-front {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-size: 2rem;
+}
+.flip-card-back {
+  background: rgba(255,255,255,0.95);
+  color: var(--text-dark);
+  transform: rotateY(180deg);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+.flip-card-back h4 {
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+  color: #1a5c3a;
+}
+.cards-progress {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+}
+
+/* ===== 第六章：新生 ===== */
+#chapter6 {
+  background: linear-gradient(180deg, #f5b041 0%, #fdebd0 100%);
+  color: var(--text-dark);
+}
+#chapter6 .chapter-title { color: #7d5a29; }
+.name-input-area {
+  display: flex; flex-direction: column;
+  align-items: center; gap: 1rem;
+  width: 100%; max-width: 400px;
+}
+.name-input-area input {
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border: 2px solid rgba(125, 90, 41, 0.3);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.7);
+  font-size: 1.2rem;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  color: var(--text-dark);
+  text-align: center;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.name-input-area input:focus {
+  border-color: var(--warm-orange);
+}
+.name-input-area input::placeholder {
+  color: rgba(125, 90, 41, 0.4);
+}
+.name-suggestions {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  justify-content: center;
+}
+.name-tag {
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(125, 90, 41, 0.2);
+  border-radius: 20px;
+  padding: 0.4rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: var(--text-dark);
+}
+.name-tag:hover {
+  background: var(--warm-orange);
+  color: white;
+}
+.sunshine-particles {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none; overflow: hidden;
+}
+.sun-particle {
+  position: absolute;
+  width: 6px; height: 6px;
+  background: rgba(245, 176, 65, 0.4);
+  border-radius: 50%;
+  animation: sunFloat 4s ease-in-out infinite;
+}
+@keyframes sunFloat {
+  0%, 100% { transform: translateY(0) scale(1); opacity: 0.3; }
+  50% { transform: translateY(-40px) scale(1.5); opacity: 0.7; }
+}
+.cat-transform {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+  transition: all 1s ease;
+}
+
+/* ===== 结果页 ===== */
+#result-page {
+  background: var(--warm-cream);
+  color: var(--text-dark);
+  overflow-y: auto;
+  padding: 2rem 1.5rem;
+}
+.result-card {
+  background: white;
+  border-radius: 24px;
+  padding: 2rem;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+  position: relative;
+}
+.result-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--warm-orange), var(--warm-gold), var(--mint));
+  border-radius: 24px 24px 0 0;
+}
+.result-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.result-header h2 {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.5rem;
+  color: #7d5a29;
+}
+.result-cat {
+  font-size: 4rem;
+  display: block;
+  margin: 0.5rem 0;
+}
+.result-cat-name {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.3rem;
+  color: var(--warm-orange);
+}
+.personality-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--warm-orange), var(--warm-gold));
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 30px;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  font-size: 1.1rem;
+  margin: 1rem 0;
+}
+.radar-chart {
+  width: 240px; height: 240px;
+  margin: 1.5rem auto;
+}
+.stat-bars {
+  margin: 1.5rem 0;
+}
+.stat-bar {
+  margin-bottom: 0.8rem;
+}
+.stat-bar label {
+  font-size: 0.85rem;
+  color: #666;
+  display: flex; justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+.stat-bar-track {
+  height: 8px;
+  background: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.social-work-note {
+  background: #fef9e7;
+  border-left: 3px solid var(--warm-orange);
+  padding: 1rem;
+  border-radius: 0 12px 12px 0;
+  margin: 1.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  color: #5a4a3a;
+}
+.reality-stats {
+  background: #fdf2e9;
+  padding: 1rem;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+.reality-stats h4 {
+  color: var(--danger-red);
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+.reality-stats p {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.6;
+}
+.share-section {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.share-section p {
+  font-size: 0.8rem;
+  color: #999;
+  margin-bottom: 1rem;
+}
+.btn-save {
+  background: linear-gradient(135deg, var(--warm-orange), #d4845a);
+  color: white; border: none;
+  border-radius: 50px;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin: 0 0.5rem;
+}
+.btn-save:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(232,168,124,0.4); }
+.btn-restart {
+  background: transparent;
+  border: 1px solid #ccc;
+  border-radius: 50px;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-family: 'ZCOOL KuaiLe', cursive;
+  color: #999;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.btn-restart:hover { border-color: var(--warm-orange); color: var(--warm-orange); }
+.hashtags {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--warm-orange);
+}
+
+/* ===== 响应式 ===== */
+@media (max-width: 480px) {
+  .cards-grid { grid-template-columns: repeat(3, 1fr); gap: 0.6rem; }
+  .result-card { padding: 1.5rem; }
+  .road { height: 280px; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="progress-bar" style="width: 0%"></div>
+
+  <!-- ===== 开始页 ===== -->
+  <div id="start-page" class="chapter active">
+    <span class="cat-emoji-large">🐱</span>
+    <h1>如果我是一只流浪猫</h1>
+    <p class="subtitle">
+      一个关于勇气、信任与回家的故事<br>
+      你准备好了吗？
+    </p>
+    <button class="btn-start" onclick="startExperience()">开始我的旅程</button>
+  </div>
+
+  <!-- ===== 序章 ===== -->
+  <div id="prologue" class="chapter">
+    <div class="rain-container" id="rain-container"></div>
+    <div style="z-index:2; text-align:center; padding: 2rem;">
+      <div class="chapter-title" style="animation-delay:0.3s">序章</div>
+      <div class="narrative" style="animation-delay:0.6s">
+        我是一只橘猫。<br>
+        我记不清自己是怎么来到这个城市的角落的。<br>
+        我只知道，从今天起，<br>
+        一切要靠我自己了。
+      </div>
+      <button class="btn-continue" onclick="goToChapter(1)">继续 →</button>
+    </div>
+    <div class="blur-overlay" id="blur-overlay" ontouchstart="handleBlurTouch(event)" ontouchmove="handleBlurTouch(event)" onmousedown="startBlurDrag(event)" onmousemove="handleBlurDrag(event)" onmouseup="endBlurDrag()">
+      <span class="hint">👆 滑动擦除迷雾，看见我的世界</span>
+    </div>
+  </div>
+
+  <!-- ===== 第一章：第一夜 ===== -->
+  <div id="chapter1" class="chapter">
+    <div class="shelter-visual">
+      <span class="cat-silhouette">🐈</span>
+    </div>
+    <div class="chapter-title" style="color: var(--cold-light)">第一章 · 第一夜</div>
+    <div class="narrative" style="animation-delay:0.3s">
+      天黑了。我需要找到一个安全的地方过夜。<br>
+      帮我选择一个栖息地吧……
+    </div>
+    <div class="choices" id="ch1-choices">
+      <button class="choice-btn" onclick="chooseChapter1('box')">
+        <span class="emoji">📦</span> 垃圾桶旁的纸箱 — 看起来还算干燥
+      </button>
+      <button class="choice-btn" onclick="chooseChapter1('car')">
+        <span class="emoji">🚗</span> 停着的车底 — 暖和但有点危险
+      </button>
+      <button class="choice-btn" onclick="chooseChapter1('bush')">
+        <span class="emoji">🌿</span> 灌木丛深处 — 隐蔽但会冷
+      </button>
+    </div>
+    <div id="ch1-result" style="display:none; text-align:center;">
+      <div class="narrative" id="ch1-result-text" style="font-size:0.95rem;"></div>
+      <button class="btn-continue" onclick="goToChapter(2)">继续 →</button>
+    </div>
+  </div>
+
+  <!-- ===== 第二章：觅食 ===== -->
+  <div id="chapter2" class="chapter">
+    <div class="chapter-title" style="color: var(--cold-light)">第二章 · 觅食之路</div>
+    <div class="narrative" style="animation-delay:0.3s; font-size:0.95rem;">
+      第二天，肚子饿得咕咕叫。<br>
+      把食物拖到我这里来吧！
+    </div>
+    <div class="food-area" id="food-area">
+      <span class="food-item" id="food1" style="top:20px;left:20px;" draggable="false" ontouchstart="startDragFood(event,'food1')" onmousedown="startDragFood(event,'food1')">🐟</span>
+      <span class="food-item" id="food2" style="top:20px;right:20px;" draggable="false" ontouchstart="startDragFood(event,'food2')" onmousedown="startDragFood(event,'food2')">🍖</span>
+      <span class="food-item" id="food3" style="top:80px;left:50%;" draggable="false" ontouchstart="startDragFood(event,'food3')" onmousedown="startDragFood(event,'food3')">🥛</span>
+      <span class="food-item" id="food4" style="top:130px;left:30px;" draggable="false" ontouchstart="startDragFood(event,'food4')" onmousedown="startDragFood(event,'food4')">🐭</span>
+      <span class="cat-target" id="cat-target">🐈</span>
+    </div>
+    <div class="food-info" id="food-info">拖动食物到猫咪身边 🐱</div>
+    <div id="ch2-done" style="display:none; text-align:center;">
+      <div class="narrative" style="font-size:0.9rem;">
+        在中国，约有 <strong style="color:var(--warm-gold);">6000万只</strong> 流浪猫，<br>
+        它们每天为食物奔波 3-5 公里。<br>
+        你的每一次善意投喂，都是一个小奇迹。
+      </div>
+      <button class="btn-continue" onclick="goToChapter(3)">继续 →</button>
+    </div>
+  </div>
+
+  <!-- ===== 第三章：危险 ===== -->
+  <div id="chapter3" class="chapter">
+    <div class="chapter-title" style="color: #e74c3c;">第三章 · 危险降临</div>
+    <div class="narrative" style="animation-delay:0.3s; font-size:0.9rem;">
+      一声急刹车！帮我躲避来往的车辆！<br>
+      <span style="font-size:0.8rem;color:rgba(255,255,255,0.5)">← 滑动或点击左右移动猫咪 →</span>
+    </div>
+    <div class="score-display" id="dodge-score">安全值: ❤️❤️❤️❤️❤️</div>
+    <div class="road" id="road" ontouchstart="handleRoadTouch(event)" onmousedown="handleRoadClick(event)">
+      <div class="cat-crossing" id="cat-crossing" style="left: calc(50% - 20px);">🐈</div>
+    </div>
+    <div id="ch3-result" style="display:none; text-align:center;">
+      <div class="narrative" style="font-size:0.9rem;" id="ch3-result-text"></div>
+      <button class="btn-continue" onclick="goToChapter(4)">继续 →</button>
+    </div>
+  </div>
+
+  <!-- ===== 第四章：信任 ===== -->
+  <div id="chapter4" class="chapter">
+    <div class="chapter-title" style="color: var(--warm-cream);">第四章 · 一双温暖的手</div>
+    <div class="narrative" style="animation-delay:0.3s; font-size:0.9rem;">
+      有人蹲下来了。她没有嫌我脏，没有赶我走。<br>
+      <span style="font-size:0.8rem;">慢慢点击屏幕，让我试着靠近她……</span>
+    </div>
+    <div class="trust-scene" id="trust-scene">
+      <span class="trust-cat" id="trust-cat">🐈</span>
+      <span class="trust-human" id="trust-human">🧎‍♀️</span>
+    </div>
+    <div class="trust-meter">
+      <div class="trust-meter-fill" id="trust-fill" style="width:0%"></div>
+    </div>
+    <div class="trust-hint" id="trust-hint">信任度：0%</div>
+    <div id="ch4-done" style="display:none; text-align:center;">
+      <div class="narrative" style="font-size:0.9rem; color: var(--text-dark);">
+        "你选择信任，这需要巨大的勇气。<br>
+        在社工的世界里，这叫 <strong>赋权</strong> ——<br>
+        不是被拯救，而是你自己选择了相信。"
+      </div>
+      <button class="btn-continue" style="color:var(--text-dark);border-color:rgba(0,0,0,0.2);" onclick="goToChapter(5)">继续 →</button>
+    </div>
+  </div>
+
+  <!-- ===== 第五章：救助站 ===== -->
+  <div id="chapter5" class="chapter">
+    <div class="chapter-title" style="color: white;">第五章 · 救助站的一天</div>
+    <div class="narrative" style="animation-delay:0.3s; font-size:0.9rem; color: white;">
+      我来到了一个叫"救助站"的地方。<br>
+      翻开卡片，了解这里的秘密吧！
+    </div>
+    <div class="cards-grid" id="cards-grid"></div>
+    <div class="cards-progress" id="cards-progress" style="color:white;">已翻开: 0 / 6</div>
+    <div id="ch5-done" style="display:none; text-align:center;">
+      <div class="narrative" style="font-size:0.9rem; color: white;">
+        每一只被救助的动物背后，<br>
+        都有一张社会支持网络在运作。<br>
+        这就是 <strong>社区资源的力量</strong>。
+      </div>
+      <button class="btn-continue" onclick="goToChapter(6)">继续 →</button>
+    </div>
+  </div>
+
+  <!-- ===== 第六章：新生 ===== -->
+  <div id="chapter6" class="chapter">
+    <div class="sunshine-particles" id="sun-particles"></div>
+    <div class="cat-transform" id="cat-transform">🐈</div>
+    <div class="chapter-title">第六章 · 新的开始</div>
+    <div class="narrative" style="animation-delay:0.3s; color: var(--text-dark);">
+      有人在领养平台上看到了我的照片。<br>
+      这一次，我有了一个家，有了一个名字。<br>
+      <strong>帮我取个名字吧？</strong>
+    </div>
+    <div class="name-input-area">
+      <input type="text" id="cat-name-input" placeholder="输入一个名字..." maxlength="8">
+      <div class="name-suggestions">
+        <span class="name-tag" onclick="pickName('小橘')">🍊 小橘</span>
+        <span class="name-tag" onclick="pickName('暖暖')">☀️ 暖暖</span>
+        <span class="name-tag" onclick="pickName('年糕')">🍡 年糕</span>
+        <span class="name-tag" onclick="pickName('星星')">⭐ 星星</span>
+        <span class="name-tag" onclick="pickName('豆豆')">🫘 豆豆</span>
+        <span class="name-tag" onclick="pickName('Lucky')">🍀 Lucky</span>
+      </div>
+      <button class="btn-start" style="margin-top:1rem; font-size:1rem; padding:0.8rem 2rem;" onclick="finishJourney()">确定名字，开始新生活 ✨</button>
+    </div>
+  </div>
+
+  <!-- ===== 结果页 ===== -->
+  <div id="result-page" class="chapter">
+    <div class="result-card" id="result-card">
+      <div class="result-header">
+        <h2>如果我是一只流浪猫</h2>
+        <span class="result-cat" id="result-cat">🐱</span>
+        <div class="result-cat-name" id="result-cat-name"></div>
+      </div>
+      <div style="text-align:center;">
+        <div class="personality-badge" id="personality-badge"></div>
+      </div>
+      <canvas class="radar-chart" id="radar-chart"></canvas>
+      <div class="stat-bars" id="stat-bars"></div>
+      <div class="social-work-note" id="sw-note"></div>
+      <div class="reality-stats">
+        <h4>🐾 现实中的它们</h4>
+        <p>中国每年约有 <strong>数百万只</strong> 流浪猫面临生存困境，<br>
+        被成功救助的不到 <strong>5%</strong>。<br>
+        你的每一次分享，都是一次倡导。</p>
+      </div>
+      <div class="share-section">
+        <p>截图保存到相册，分享到小红书 📱</p>
+        <button class="btn-save" onclick="saveScreenshot()">📸 保存结果</button>
+        <button class="btn-restart" onclick="restart()">🔄 再来一次</button>
+        <div class="hashtags">
+          #如果我是一只流浪猫 #流浪猫生存报告 #社工视角看世界 #领养代替购买
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 游戏状态 =====
+const state = {
+  currentChapter: -1,
+  scores: { independent: 0, connect: 0, cautious: 0, adventurous: 0 },
+  catName: '小橘',
+  foodCount: 0,
+  dodgeHP: 5,
+  trustLevel: 0,
+  cardsFlipped: 0,
+  dodgeTimer: null,
+  dodgeActive: false
+};
+
+// ===== 导航 =====
+function showChapter(id) {
+  document.querySelectorAll('.chapter').forEach(c => c.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function updateProgress(pct) {
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+function startExperience() {
+  state.currentChapter = 0;
+  showChapter('prologue');
+  updateProgress(5);
+  createRain();
+}
+function goToChapter(n) {
+  state.currentChapter = n;
+  const ids = ['', 'chapter1', 'chapter2', 'chapter3', 'chapter4', 'chapter5', 'chapter6'];
+  if (n >= 1 && n <= 6) {
+    showChapter(ids[n]);
+    updateProgress(5 + n * 14);
+  }
+  if (n === 2) initFoodDrag();
+  if (n === 3) startDodgeGame();
+  if (n === 4) initTrust();
+  if (n === 5) initCards();
+  if (n === 6) initSunshine();
+}
+
+// ===== 序章：雨 + 擦除模糊 =====
+function createRain() {
+  const container = document.getElementById('rain-container');
+  container.innerHTML = '';
+  for (let i = 0; i < 60; i++) {
+    const drop = document.createElement('div');
+    drop.className = 'raindrop';
+    drop.style.left = Math.random() * 100 + '%';
+    drop.style.height = (15 + Math.random() * 25) + 'px';
+    drop.style.animationDuration = (0.4 + Math.random() * 0.5) + 's';
+    drop.style.animationDelay = Math.random() * 2 + 's';
+    drop.style.opacity = 0.3 + Math.random() * 0.4;
+    container.appendChild(drop);
+  }
+}
+
+let blurDragging = false, blurProgress = 0;
+function startBlurDrag(e) { blurDragging = true; clearBlurArea(e); }
+function handleBlurDrag(e) { if (blurDragging) clearBlurArea(e); }
+function endBlurDrag() { blurDragging = false; }
+function handleBlurTouch(e) { e.preventDefault(); clearBlurArea(e.touches[0]); }
+
+function clearBlurArea(e) {
+  const overlay = document.getElementById('blur-overlay');
+  const rect = overlay.getBoundingClientRect();
+  const x = (e.clientX || e.pageX) - rect.left;
+  const y = (e.clientY || e.pageY) - rect.top;
+  blurProgress += 2;
+  
+  // Create a "hole" in the blur using radial gradient mask
+  const size = 80 + blurProgress * 2;
+  overlay.style.background = `radial-gradient(circle ${size}px at ${x}px ${y}px, transparent 0%, rgba(26,26,46,0.6) 100%)`;
+  overlay.style.backdropFilter = `blur(${Math.max(0, 20 - blurProgress)}px)`;
+  
+  if (blurProgress > 40) {
+    overlay.style.opacity = Math.max(0, 1 - (blurProgress - 40) / 20);
+  }
+  if (blurProgress > 60) {
+    overlay.style.display = 'none';
+  }
+}
+
+// ===== 第一章：选择栖息地 =====
+function chooseChapter1(choice) {
+  const texts = {
+    box: '纸箱里有一股旧报纸的味道。虽然不暖和，但至少不会被雨淋到。你做出了保护自己的选择——这就够了。',
+    car: '车底暖暖的，但你整夜都保持着警惕。天亮时，你听到引擎声，飞快地跑了出来。你学会了在温暖中保持警觉。',
+    bush: '灌木丛很深，风吹过来有点冷。但你蜷缩成一团，用自己毛茸茸的身体温暖自己。你比自己想象的更坚强。'
+  };
+  const scores = {
+    box: { cautious: 2 },
+    car: { adventurous: 2 },
+    bush: { independent: 2 }
+  };
+  
+  Object.keys(scores[choice]).forEach(k => state.scores[k] += scores[choice][k]);
+  
+  document.getElementById('ch1-choices').style.display = 'none';
+  document.getElementById('ch1-result').style.display = 'block';
+  document.getElementById('ch1-result-text').innerHTML = texts[choice];
+}
+
+// ===== 第二章：拖拽食物 =====
+let dragFood = null, dragOffsetX = 0, dragOffsetY = 0;
+
+function initFoodDrag() {
+  document.addEventListener('mousemove', moveDragFood);
+  document.addEventListener('mouseup', endDragFood);
+  document.addEventListener('touchmove', moveDragFoodTouch, { passive: false });
+  document.addEventListener('touchend', endDragFood);
+}
+
+function startDragFood(e, id) {
+  e.preventDefault();
+  dragFood = document.getElementById(id);
+  if (dragFood.classList.contains('eaten')) return;
+  dragFood.classList.add('dragging');
+  const rect = dragFood.getBoundingClientRect();
+  const point = e.touches ? e.touches[0] : e;
+  dragOffsetX = point.clientX - rect.left;
+  dragOffsetY = point.clientY - rect.top;
+}
+function moveDragFood(e) {
+  if (!dragFood) return;
+  const area = document.getElementById('food-area');
+  const areaRect = area.getBoundingClientRect();
+  dragFood.style.position = 'fixed';
+  dragFood.style.left = (e.clientX - dragOffsetX) + 'px';
+  dragFood.style.top = (e.clientY - dragOffsetY) + 'px';
+}
+function moveDragFoodTouch(e) {
+  e.preventDefault();
+  if (!dragFood) return;
+  const t = e.touches[0];
+  dragFood.style.position = 'fixed';
+  dragFood.style.left = (t.clientX - dragOffsetX) + 'px';
+  dragFood.style.top = (t.clientY - dragOffsetY) + 'px';
+}
+function endDragFood() {
+  if (!dragFood) return;
+  dragFood.classList.remove('dragging');
+  const cat = document.getElementById('cat-target');
+  const catRect = cat.getBoundingClientRect();
+  const foodRect = dragFood.getBoundingClientRect();
+  const dist = Math.hypot(
+    (catRect.left + catRect.width/2) - (foodRect.left + foodRect.width/2),
+    (catRect.top + catRect.height/2) - (foodRect.top + foodRect.height/2)
+  );
+  if (dist < 80) {
+    dragFood.classList.add('eaten');
+    dragFood.style.opacity = '0';
+    dragFood.style.transition = 'all 0.5s';
+    state.foodCount++;
+    const foodData = { food1: {type:'鱼',score:'independent'}, food2: {type:'肉',score:'adventurous'}, food3: {type:'牛奶',score:'connect'}, food4: {type:'老鼠',score:'independent'} };
+    const key = dragFood.id;
+    if (foodData[key]) state.scores[foodData[key].score]++;
+    document.getElementById('food-info').textContent = `好吃！已吃掉 ${state.foodCount} 份食物 🐱`;
+    if (state.foodCount >= 3) {
+      setTimeout(() => {
+        document.getElementById('ch2-done').style.display = 'block';
+        document.getElementById('food-area').style.opacity = '0.3';
+      }, 500);
+    }
+  }
+  dragFood = null;
+}
+
+// ===== 第三章：躲避游戏 =====
+function startDodgeGame() {
+  state.dodgeHP = 5;
+  state.dodgeActive = true;
+  const road = document.getElementById('road');
+  const cat = document.getElementById('cat-crossing');
+  let cars = [];
+  let dodgeScore = 0;
+  
+  // Add road lines
+  for (let i = 0; i < 5; i++) {
+    const line = document.createElement('div');
+    line.className = 'road-line';
+    line.style.top = (i * 80) + 'px';
+    line.style.animationDelay = (i * 0.16) + 's';
+    road.appendChild(line);
+  }
+  
+  let carInterval = setInterval(() => {
+    if (!state.dodgeActive) { clearInterval(carInterval); return; }
+    const car = document.createElement('div');
+    car.className = 'car';
+    car.textContent = Math.random() > 0.5 ? '🚗' : '🚙';
+    car.style.left = (10 + Math.random() * 60) + '%';
+    car.style.top = '-40px';
+    road.appendChild(car);
+    cars.push(car);
+  }, 800);
+  
+  let moveInterval = setInterval(() => {
+    if (!state.dodgeActive) { clearInterval(moveInterval); return; }
+    const catRect = cat.getBoundingClientRect();
+    const catCX = catRect.left + catRect.width / 2;
+    const catCY = catRect.top + catRect.height / 2;
+    
+    cars.forEach((car, i) => {
+      const top = parseFloat(car.style.top) || 0;
+      car.style.top = (top + 4) + 'px';
+      
+      if (top > 350) {
+        car.remove();
+        cars.splice(i, 1);
+        dodgeScore++;
+      } else {
+        const carRect = car.getBoundingClientRect();
+        const dist = Math.hypot(
+          (carRect.left + carRect.width/2) - catCX,
+          (carRect.top + carRect.height/2) - catCY
+        );
+        if (dist < 40 && !car.dataset.hit) {
+          car.dataset.hit = 'true';
+          state.dodgeHP--;
+          cat.textContent = '😿';
+          setTimeout(() => cat.textContent = '🐈', 400);
+          updateDodgeHP();
+          if (state.dodgeHP <= 0) endDodgeGame();
+        }
+      }
+    });
+    
+    if (dodgeScore >= 12) endDodgeGame();
+  }, 30);
+  
+  function endDodgeGame() {
+    state.dodgeActive = false;
+    clearInterval(carInterval);
+    clearInterval(moveInterval);
+    
+    if (state.dodgeHP > 0) {
+      state.scores.adventurous += 2;
+      document.getElementById('ch3-result-text').innerHTML = 
+        '你灵活地躲过了所有车辆！但很多流浪猫没能这么幸运……<br>每年有大量流浪动物因交通事故伤亡。<br>这不只是个体的不幸，更是 <strong>系统性的问题</strong>。';
+    } else {
+      state.scores.cautious += 2;
+      document.getElementById('ch3-result-text').innerHTML = 
+        '虽然被擦到了，但你还是挺过来了。<br>城市里的流浪，每一步都是冒险。<br>社工相信：<strong>改变需要从制度开始</strong>。';
+    }
+    document.getElementById('road').style.opacity = '0.3';
+    document.getElementById('ch3-result').style.display = 'block';
+  }
+}
+
+function updateDodgeHP() {
+  const hearts = '❤️'.repeat(state.dodgeHP) + '🖤'.repeat(5 - state.dodgeHP);
+  document.getElementById('dodge-score').textContent = '安全值: ' + hearts;
+}
+
+function handleRoadTouch(e) {
+  e.preventDefault();
+  const t = e.touches[0];
+  moveCatTo(t);
+}
+function handleRoadClick(e) {
+  moveCatTo(e);
+}
+function moveCatTo(e) {
+  const road = document.getElementById('road');
+  const rect = road.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const cat = document.getElementById('cat-crossing');
+  const pct = Math.max(5, Math.min(85, (x / rect.width) * 100));
+  cat.style.left = `calc(${pct}% - 20px)`;
+}
+
+// ===== 第四章：信任 =====
+function initTrust() {
+  state.trustLevel = 0;
+  const scene = document.getElementById('trust-scene');
+  scene.addEventListener('click', buildTrust);
+  scene.addEventListener('touchstart', (e) => { e.preventDefault(); buildTrust(); });
+}
+function buildTrust() {
+  if (state.trustLevel >= 100) return;
+  state.trustLevel = Math.min(100, state.trustLevel + 8);
+  
+  const cat = document.getElementById('trust-cat');
+  const human = document.getElementById('trust-human');
+  const fill = document.getElementById('trust-fill');
+  const hint = document.getElementById('trust-hint');
+  
+  const catLeft = 30 + state.trustLevel * 0.8;
+  const humanRight = 30 + state.trustLevel * 0.5;
+  cat.style.left = catLeft + 'px';
+  human.style.right = humanRight + 'px';
+  fill.style.width = state.trustLevel + '%';
+  
+  const labels = ['警惕...', '犹豫...', '好奇...', '靠近...', '蹭蹭！💕'];
+  const idx = Math.min(4, Math.floor(state.trustLevel / 20));
+  hint.textContent = labels[idx];
+  
+  // Float hearts
+  if (state.trustLevel % 16 === 0) {
+    const heart = document.createElement('span');
+    heart.className = 'trust-heart';
+    heart.textContent = '💕';
+    heart.style.left = catLeft + 'px';
+    heart.style.bottom = '80px';
+    document.getElementById('trust-scene').appendChild(heart);
+    setTimeout(() => heart.remove(), 1500);
+  }
+  
+  if (state.trustLevel >= 100) {
+    state.scores.connect += 3;
+    setTimeout(() => {
+      document.getElementById('ch4-done').style.display = 'block';
+    }, 800);
+  }
+}
+
+// ===== 第五章：翻翻乐 =====
+const cardData = [
+  { emoji: '🏥', title: 'TNR 是什么？', desc: '捕捉-绝育-放归（Trap-Neuter-Return），是目前国际公认最人道的流浪动物管理方式。' },
+  { emoji: '💉', title: '疫苗的意义', desc: '接种疫苗不仅保护个体，也保护整个社区，阻断狂犬病等人畜共患病的传播链。' },
+  { emoji: '🏠', title: '领养代替购买', desc: '每一只被领养的动物，都意味着救助站多出一个位置，给下一个需要帮助的生命。' },
+  { emoji: '🤝', title: '志愿者网络', desc: '救助站的日常运转依靠大量志愿者的协作，这就是"非正式社会支持网络"的力量。' },
+  { emoji: '📋', title: '社区治理', desc: '许多城市已开始推行文明养宠条例，从制度层面减少遗弃行为的发生。' },
+  { emoji: '💛', title: '社工的参与', desc: '社会工作关注人与环境的互动，动物福利也是社工实务的重要议题之一。' }
+];
+
+function initCards() {
+  const grid = document.getElementById('cards-grid');
+  grid.innerHTML = '';
+  state.cardsFlipped = 0;
+  cardData.forEach((card, i) => {
+    const el = document.createElement('div');
+    el.className = 'flip-card';
+    el.innerHTML = `
+      <div class="flip-card-inner">
+        <div class="flip-card-front">${card.emoji}</div>
+        <div class="flip-card-back">
+          <h4>${card.title}</h4>
+          <p>${card.desc}</p>
+        </div>
+      </div>`;
+    el.addEventListener('click', () => flipCard(el, i));
+    grid.appendChild(el);
+  });
+}
+function flipCard(el, i) {
+  if (el.classList.contains('flipped')) return;
+  el.classList.add('flipped');
+  state.cardsFlipped++;
+  state.scores.connect++;
+  document.getElementById('cards-progress').textContent = `已翻开: ${state.cardsFlipped} / 6`;
+  if (state.cardsFlipped >= 6) {
+    setTimeout(() => {
+      document.getElementById('ch5-done').style.display = 'block';
+    }, 600);
+  }
+}
+
+// ===== 第六章：起名 =====
+function initSunshine() {
+  const container = document.getElementById('sun-particles');
+  container.innerHTML = '';
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'sun-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.animationDelay = Math.random() * 4 + 's';
+    p.style.animationDuration = (3 + Math.random() * 3) + 's';
+    container.appendChild(p);
+  }
+}
+function pickName(name) {
+  document.getElementById('cat-name-input').value = name;
+}
+function finishJourney() {
+  const name = document.getElementById('cat-name-input').value.trim() || '小橘';
+  state.catName = name;
+  showResult();
+}
+
+// ===== 结果页 =====
+function showResult() {
+  showChapter('result-page');
+  updateProgress(100);
+  
+  document.getElementById('result-cat-name').textContent = `我的名字是 ${state.catName}`;
+  
+  // Calculate personality
+  const s = state.scores;
+  const indAxis = s.independent - s.connect;
+  const openAxis = s.adventurous - s.cautious;
+  
+  let personality, desc;
+  if (indAxis <= 0 && openAxis <= 0) {
+    personality = '🛡️ 智慧的守望者';
+    desc = '你谨慎而有耐心。你会仔细观察，等待最好的时机。在社工眼中，这种"反思性实践"是最珍贵的品质之一。';
+  } else if (indAxis <= 0 && openAxis > 0) {
+    personality = '💕 温暖的信任者';
+    desc = '你愿意相信，也愿意冒险。你相信每一个善意的连接都有力量。这就是社工所说的"赋权"——在信任中获得力量。';
+  } else if (indAxis > 0 && openAxis <= 0) {
+    personality = '🌙 坚韧的独行侠';
+    desc = '你独立而坚韧。即使孤身一人，你也能找到生存的方式。优势视角告诉我们：你的独立性本身就是一种力量。';
+  } else {
+    personality = '🌟 温柔的冒险家';
+    desc = '你勇敢又独立，敢于探索未知。在社工的世界里，这种"抗逆力"（Resilience）是每个人内在的宝藏。';
+  }
+  
+  document.getElementById('personality-badge').textContent = personality;
+  
+  // Stat bars
+  const total = Math.max(1, s.independent + s.connect + s.cautious + s.adventurous);
+  const stats = [
+    { label: '独立生存力', value: Math.min(95, 40 + s.independent * 10), color: '#e67e22' },
+    { label: '信任建立力', value: Math.min(95, 40 + s.connect * 8), color: '#e74c3c' },
+    { label: '环境适应力', value: Math.min(95, 40 + s.adventurous * 8), color: '#27ae60' },
+    { label: '危机应对力', value: Math.min(95, 30 + state.dodgeHP * 12), color: '#2980b9' },
+    { label: '社会连接力', value: Math.min(95, 30 + state.foodCount * 10 + state.cardsFlipped * 5), color: '#8e44ad' }
+  ];
+  
+  const barsContainer = document.getElementById('stat-bars');
+  barsContainer.innerHTML = '';
+  stats.forEach((stat, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'stat-bar';
+    bar.innerHTML = `
+      <label><span>${stat.label}</span><span>${stat.value}%</span></label>
+      <div class="stat-bar-track">
+        <div class="stat-bar-fill" style="width:0%;background:${stat.color}"></div>
+      </div>`;
+    barsContainer.appendChild(bar);
+    setTimeout(() => {
+      bar.querySelector('.stat-bar-fill').style.width = stat.value + '%';
+    }, 300 + i * 200);
+  });
+  
+  // Radar chart
+  setTimeout(() => drawRadar(stats), 500);
+  
+  // Social work note
+  document.getElementById('sw-note').innerHTML = `
+    <strong>社工说：</strong><br>${desc}
+  `;
+}
+
+function drawRadar(stats) {
+  const canvas = document.getElementById('radar-chart');
+  const ctx = canvas.getContext('2d');
+  const W = 240, H = 240;
+  canvas.width = W * 2; canvas.height = H * 2;
+  canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+  ctx.scale(2, 2);
+  
+  const cx = W / 2, cy = H / 2, R = 90;
+  const n = stats.length;
+  const angleStep = (Math.PI * 2) / n;
+  
+  // Grid
+  for (let level = 1; level <= 4; level++) {
+    ctx.beginPath();
+    const r = R * level / 4;
+    for (let i = 0; i <= n; i++) {
+      const a = -Math.PI / 2 + i * angleStep;
+      const x = cx + Math.cos(a) * r;
+      const y = cy + Math.sin(a) * r;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(0,0,0,0.08)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+  
+  // Axes
+  for (let i = 0; i < n; i++) {
+    const a = -Math.PI / 2 + i * angleStep;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+    ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+    ctx.stroke();
+    
+    // Labels
+    const lx = cx + Math.cos(a) * (R + 18);
+    const ly = cy + Math.sin(a) * (R + 18);
+    ctx.font = '10px "Noto Serif SC"';
+    ctx.fillStyle = '#888';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(stats[i].label.replace('力', ''), lx, ly);
+  }
+  
+  // Data
+  ctx.beginPath();
+  stats.forEach((stat, i) => {
+    const a = -Math.PI / 2 + i * angleStep;
+    const r = R * stat.value / 100;
+    const x = cx + Math.cos(a) * r;
+    const y = cy + Math.sin(a) * r;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(232, 168, 124, 0.25)';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(232, 168, 124, 0.8)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+  
+  // Points
+  stats.forEach((stat, i) => {
+    const a = -Math.PI / 2 + i * angleStep;
+    const r = R * stat.value / 100;
+    ctx.beginPath();
+    ctx.arc(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 4, 0, Math.PI * 2);
+    ctx.fillStyle = stat.color;
+    ctx.fill();
+  });
+}
+
+function saveScreenshot() {
+  alert('请截图保存结果页！\n\n手机：同时按 电源键 + 音量下\n电脑：按 Ctrl + Shift + S\n\n然后分享到小红书，带上标签：\n#如果我是一只流浪猫 #流浪猫生存报告');
+}
+
+function restart() {
+  state.currentChapter = -1;
+  state.scores = { independent: 0, connect: 0, cautious: 0, adventurous: 0 };
+  state.catName = '小橘';
+  state.foodCount = 0;
+  state.dodgeHP = 5;
+  state.trustLevel = 0;
+  state.cardsFlipped = 0;
+  blurProgress = 0;
+  
+  const overlay = document.getElementById('blur-overlay');
+  overlay.style.opacity = '1';
+  overlay.style.display = 'flex';
+  overlay.style.backdropFilter = 'blur(20px)';
+  overlay.style.background = 'rgba(26, 26, 46, 0.6)';
+  
+  document.getElementById('ch1-choices').style.display = 'flex';
+  document.getElementById('ch1-result').style.display = 'none';
+  document.getElementById('ch2-done').style.display = 'none';
+  document.getElementById('food-area').style.opacity = '1';
+  document.getElementById('ch3-result').style.display = 'none';
+  document.getElementById('road').style.opacity = '1';
+  document.getElementById('ch4-done').style.display = 'none';
+  document.getElementById('ch5-done').style.display = 'none';
+  document.getElementById('trust-fill').style.width = '0%';
+  document.getElementById('trust-cat').style.left = '30px';
+  document.getElementById('trust-human').style.right = '30px';
+  
+  ['food1','food2','food3','food4'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.remove('eaten');
+    el.style.opacity = '1';
+    el.style.position = 'absolute';
+    el.style.transition = '';
+  });
+  
+  updateProgress(0);
+  showChapter('start-page');
+}
+</script>
+</body>
+</html>
